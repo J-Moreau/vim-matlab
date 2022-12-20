@@ -8,9 +8,9 @@ import collections
 
 import neovim
 
-from matlab_cli_controller import MatlabCliController
-from python_vim_utils import PythonVimUtils as vim_helper
-import python_vim_utils
+from vim_matlab.matlab_cli_controller import MatlabCliController
+from vim_matlab.python_vim_utils import PythonVimUtils as vim_helper
+import vim_matlab.python_vim_utils as python_vim_utils
 
 
 __created__ = 'Mar 01, 2015'

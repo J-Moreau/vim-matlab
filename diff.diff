@@ -1,0 +1,254 @@
+diff --git a/rplugin/python3/vim_matlab.py b/rplugin/python/vim_matlab.py
+similarity index 100%
+rename from rplugin/python3/vim_matlab.py
+rename to rplugin/python/vim_matlab.py
+diff --git a/rplugin/python3/vim_matlab/__init__.py b/rplugin/python/vim_matlab/__init__.py
+similarity index 98%
+rename from rplugin/python3/vim_matlab/__init__.py
+rename to rplugin/python/vim_matlab/__init__.py
+index ff32ba3..35d0960 100644
+--- a/rplugin/python3/vim_matlab/__init__.py
++++ b/rplugin/python/vim_matlab/__init__.py
+@@ -8,9 +8,9 @@ import collections
+ 
+ import neovim
+ 
+-from vim_matlab.matlab_cli_controller import MatlabCliController
+-from vim_matlab.python_vim_utils import PythonVimUtils as vim_helper
+-import vim_matlab.python_vim_utils as python_vim_utils
++from matlab_cli_controller import MatlabCliController
++from python_vim_utils import PythonVimUtils as vim_helper
++import python_vim_utils
+ 
+ 
+ __created__ = 'Mar 01, 2015'
+diff --git a/rplugin/python3/vim_matlab/command.py b/rplugin/python/vim_matlab/command.py
+similarity index 96%
+rename from rplugin/python3/vim_matlab/command.py
+rename to rplugin/python/vim_matlab/command.py
+index 2cb110a..b156d5d 100644
+--- a/rplugin/python3/vim_matlab/command.py
++++ b/rplugin/python/vim_matlab/command.py
+@@ -1,7 +1,7 @@
+ import subprocess
+ import threading
+ 
+-import vim_matlab.logger as logger
++import logger
+ 
+ 
+ __author__ = 'daeyun'
+diff --git a/rplugin/python3/vim_matlab/input_controller.py b/rplugin/python/vim_matlab/input_controller.py
+similarity index 100%
+rename from rplugin/python3/vim_matlab/input_controller.py
+rename to rplugin/python/vim_matlab/input_controller.py
+diff --git a/rplugin/python3/vim_matlab/io_helper.py b/rplugin/python/vim_matlab/io_helper.py
+similarity index 100%
+rename from rplugin/python3/vim_matlab/io_helper.py
+rename to rplugin/python/vim_matlab/io_helper.py
+diff --git a/rplugin/python3/vim_matlab/logger.py b/rplugin/python/vim_matlab/logger.py
+similarity index 100%
+rename from rplugin/python3/vim_matlab/logger.py
+rename to rplugin/python/vim_matlab/logger.py
+diff --git a/rplugin/python3/vim_matlab/matlab/evalAndClean.m b/rplugin/python/vim_matlab/matlab/evalAndClean.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/evalAndClean.m
+rename to rplugin/python/vim_matlab/matlab/evalAndClean.m
+diff --git a/rplugin/python3/vim_matlab/matlab/openDocumentInEditor.m b/rplugin/python/vim_matlab/matlab/openDocumentInEditor.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/openDocumentInEditor.m
+rename to rplugin/python/vim_matlab/matlab/openDocumentInEditor.m
+diff --git a/rplugin/python3/vim_matlab/matlab/printBackspace.m b/rplugin/python/vim_matlab/matlab/printBackspace.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/printBackspace.m
+rename to rplugin/python/vim_matlab/matlab/printBackspace.m
+diff --git a/rplugin/python3/vim_matlab/matlab/printVarInfo.m b/rplugin/python/vim_matlab/matlab/printVarInfo.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/printVarInfo.m
+rename to rplugin/python/vim_matlab/matlab/printVarInfo.m
+diff --git a/rplugin/python3/vim_matlab/matlab/sendTcp.m b/rplugin/python/vim_matlab/matlab/sendTcp.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/sendTcp.m
+rename to rplugin/python/vim_matlab/matlab/sendTcp.m
+diff --git a/rplugin/python3/vim_matlab/matlab/setEditorCursor.m b/rplugin/python/vim_matlab/matlab/setEditorCursor.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/setEditorCursor.m
+rename to rplugin/python/vim_matlab/matlab/setEditorCursor.m
+diff --git a/rplugin/python3/vim_matlab/matlab/testVimMatlab.m b/rplugin/python/vim_matlab/matlab/testVimMatlab.m
+similarity index 100%
+rename from rplugin/python3/vim_matlab/matlab/testVimMatlab.m
+rename to rplugin/python/vim_matlab/matlab/testVimMatlab.m
+diff --git a/rplugin/python3/vim_matlab/matlab_cli_controller.py b/rplugin/python/vim_matlab/matlab_cli_controller.py
+similarity index 89%
+rename from rplugin/python3/vim_matlab/matlab_cli_controller.py
+rename to rplugin/python/vim_matlab/matlab_cli_controller.py
+index 668ead5..1211ffb 100644
+--- a/rplugin/python3/vim_matlab/matlab_cli_controller.py
++++ b/rplugin/python/vim_matlab/matlab_cli_controller.py
+@@ -1,13 +1,13 @@
+ import time
+ from threading import Timer
+ 
+-from vim_matlab.io_helper import find_plugin_matlab_path
++from io_helper import find_plugin_matlab_path
+ 
+ 
+ __author__ = 'daeyun'
+ 
+ import socket
+-import vim_matlab.logger as logger
++import logger
+ 
+ 
+ class MatlabCliController:
+@@ -26,7 +26,7 @@ class MatlabCliController:
+         num_retry = 0
+         while num_retry < 3:
+             try:
+-                self.sock.sendall(bytes(code + "\n", "utf-8"))
++                self.sock.sendall(code + "\n")
+                 logger.log.info(code)
+                 break
+             except Exception as ex:
+diff --git a/rplugin/python3/vim_matlab/matlab_gui_controller.py b/rplugin/python/vim_matlab/matlab_gui_controller.py
+similarity index 99%
+rename from rplugin/python3/vim_matlab/matlab_gui_controller.py
+rename to rplugin/python/vim_matlab/matlab_gui_controller.py
+index 4f6d635..0a27647 100644
+--- a/rplugin/python3/vim_matlab/matlab_gui_controller.py
++++ b/rplugin/python/vim_matlab/matlab_gui_controller.py
+@@ -6,7 +6,7 @@ import re
+ import pyperclip
+ 
+ from input_controller import disable_input
+-from vim_matlab.io_helper import find_plugin_matlab_path
++from io_helper import find_plugin_matlab_path
+ from xdotool import Xdotool
+ 
+ """
+diff --git a/rplugin/python3/vim_matlab/python_vim_utils.py b/rplugin/python/vim_matlab/python_vim_utils.py
+similarity index 100%
+rename from rplugin/python3/vim_matlab/python_vim_utils.py
+rename to rplugin/python/vim_matlab/python_vim_utils.py
+diff --git a/rplugin/python3/vim_matlab/requirements.txt b/rplugin/python/vim_matlab/requirements.txt
+similarity index 100%
+rename from rplugin/python3/vim_matlab/requirements.txt
+rename to rplugin/python/vim_matlab/requirements.txt
+diff --git a/rplugin/python3/vim_matlab/xdotool.py b/rplugin/python/vim_matlab/xdotool.py
+similarity index 98%
+rename from rplugin/python3/vim_matlab/xdotool.py
+rename to rplugin/python/vim_matlab/xdotool.py
+index 7a98040..62cab71 100644
+--- a/rplugin/python3/vim_matlab/xdotool.py
++++ b/rplugin/python/vim_matlab/xdotool.py
+@@ -1,5 +1,5 @@
+ from command import Command
+-from vim_matlabvim_matlab..logger import log
++from logger import log
+ 
+ __author__ = 'daeyun'
+ 
+diff --git a/scripts/reload-vim.sh b/scripts/reload-vim.sh
+index e3563c4..9ef0c74 100755
+--- a/scripts/reload-vim.sh
++++ b/scripts/reload-vim.sh
+@@ -4,6 +4,6 @@ set -o xtrace
+ 
+ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+ 
+-find $DIR/../rplugin/python3 -type f -name '*.pyc' -exec rm {} \;
+-find $DIR/../rplugin/python3 -type d -name '__pycache__' -exec rm {} \;
++find $DIR/../rplugin/python -type f -name '*.pyc' -exec rm {} \;
++find $DIR/../rplugin/python -type d -name '__pycache__' -exec rm {} \;
+ nvim -c "UpdateRemotePlugins" -c "q" && nvim $@ -c "UpdateRemotePlugins"
+diff --git a/scripts/vim-matlab-server.py b/scripts/vim-matlab-server.py
+index ff6fd10..45db21c 100755
+--- a/scripts/vim-matlab-server.py
++++ b/scripts/vim-matlab-server.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python3
++#!/usr/bin/env python2
+ 
+ __author__ = 'daeyun'
+ 
+@@ -11,7 +11,7 @@ if use_pexpect:
+ if not use_pexpect:
+     from subprocess import Popen, PIPE
+ 
+-import socketserver
++import SocketServer
+ import os
+ import random
+ import signal
+@@ -22,7 +22,7 @@ import time
+ from sys import stdin
+ 
+ hide_until_newline = False
+-auto_restart = False
++auto_restart = True
+ server = None
+ 
+ 
+@@ -76,13 +76,13 @@ class Matlab:
+                     self.proc.stdin.flush()
+                 break
+             except Exception as ex:
+-                print(ex)
++                print ex
+                 self.launch_process()
+                 num_retry += 1
+                 time.sleep(1)
+ 
+ 
+-class TCPHandler(socketserver.StreamRequestHandler):
++class TCPHandler(SocketServer.StreamRequestHandler):
+     def handle(self):
+         print_flush("New connection: {}".format(self.client_address))
+ 
+@@ -90,7 +90,7 @@ class TCPHandler(socketserver.StreamRequestHandler):
+             msg = self.rfile.readline()
+             if not msg:
+                 break
+-            msg = msg.strip().decode("utf-8")
++            msg = msg.strip()
+             print_flush((msg[:74] + '...') if len(msg) > 74 else msg, end='')
+ 
+             options = {
+@@ -132,16 +132,14 @@ def output_filter(output_string):
+     :return: The filtered string.
+     """
+     global hide_until_newline
+-    return output_string
+-    # TODO broken ...
+-    # if hide_until_newline:
+-        # if '\n' in output_string:
+-            # hide_until_newline = False
+-            # return output_string[output_string.find('\n'):]
+-        # else:
+-            # return ''
+-    # else:
+-        # return output_string
++    if hide_until_newline:
++        if '\n' in output_string:
++            hide_until_newline = False
++            return output_string[output_string.find('\n'):]
++        else:
++            return ''
++    else:
++        return output_string
+ 
+ 
+ def input_filter(input_string):
+@@ -178,10 +176,10 @@ def print_flush(value, end='\n'):
+ 
+ def main():
+     host, port = "localhost", 43889
+-    socketserver.TCPServer.allow_reuse_address = True
++    SocketServer.TCPServer.allow_reuse_address = True
+ 
+     global server
+-    server = socketserver.TCPServer((host, port), TCPHandler)
++    server = SocketServer.TCPServer((host, port), TCPHandler)
+     server.matlab = Matlab()
+ 
+     start_thread(target=forward_input, args=(server.matlab,))

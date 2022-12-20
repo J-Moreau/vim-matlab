@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 __author__ = 'daeyun'
 
@@ -11,7 +11,7 @@ if use_pexpect:
 if not use_pexpect:
     from subprocess import Popen, PIPE
 
-import SocketServer
+import socketserver
 import os
 import random
 import signal
@@ -22,7 +22,7 @@ import time
 from sys import stdin
 
 hide_until_newline = False
-auto_restart = True
+auto_restart = False
 server = None
 
 
@@ -48,7 +48,7 @@ class Matlab:
         except:
             pass
 
-    def run_code(self, code, run_timer=True):
+    def run_code(self, code, run_timer=False):
         num_retry = 0
         rand_var = ''.join(
             random.choice(string.ascii_uppercase) for _ in range(12))
@@ -76,13 +76,13 @@ class Matlab:
                     self.proc.stdin.flush()
                 break
             except Exception as ex:
-                print ex
+                print(ex)
                 self.launch_process()
                 num_retry += 1
                 time.sleep(1)
 
 
-class TCPHandler(SocketServer.StreamRequestHandler):
+class TCPHandler(socketserver.StreamRequestHandler):
     def handle(self):
         print_flush("New connection: {}".format(self.client_address))
 
@@ -90,7 +90,7 @@ class TCPHandler(SocketServer.StreamRequestHandler):
             msg = self.rfile.readline()
             if not msg:
                 break
-            msg = msg.strip()
+            msg = msg.strip().decode("utf-8")
             print_flush((msg[:74] + '...') if len(msg) > 74 else msg, end='')
 
             options = {
@@ -132,14 +132,16 @@ def output_filter(output_string):
     :return: The filtered string.
     """
     global hide_until_newline
-    if hide_until_newline:
-        if '\n' in output_string:
-            hide_until_newline = False
-            return output_string[output_string.find('\n'):]
-        else:
-            return ''
-    else:
-        return output_string
+    return output_string
+    # TODO broken ...
+    # if hide_until_newline:
+        # if '\n' in output_string:
+            # hide_until_newline = False
+            # return output_string[output_string.find('\n'):]
+        # else:
+            # return ''
+    # else:
+        # return output_string
 
 
 def input_filter(input_string):
@@ -157,7 +159,7 @@ def forward_input(matlab):
         matlab.proc.interact(input_filter=input_filter,output_filter=output_filter)
     else:
         while True:
-            matlab.proc.stdin.write(stdin.readline())
+            matlab.proc.stdin.write(stdin.readline().encode())
 
 
 def start_thread(target=None, args=()):
@@ -176,10 +178,10 @@ def print_flush(value, end='\n'):
 
 def main():
     host, port = "localhost", 43889
-    SocketServer.TCPServer.allow_reuse_address = True
+    socketserver.TCPServer.allow_reuse_address = True
 
     global server
-    server = SocketServer.TCPServer((host, port), TCPHandler)
+    server = socketserver.TCPServer((host, port), TCPHandler)
     server.matlab = Matlab()
 
     start_thread(target=forward_input, args=(server.matlab,))

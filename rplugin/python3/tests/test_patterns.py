@@ -1,4 +1,4 @@
-from rplugin.python3.vim_matlab import python_vim_utils
+from vim_matlab import python_vim_utils
 
 def strip_comments(line):
     pattern = python_vim_utils.PythonVimUtils.comment_pattern
